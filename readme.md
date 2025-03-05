@@ -1,4 +1,5 @@
 # To do
+- [ ] Change the stimuli to the visual search stimuli
 - [ ] Program the stimuli to advance on gaze 1000ms
 - [x] Trigger
 - [ ] Trigger information with dificulty level embeded
@@ -26,9 +27,9 @@ Tools - Plugin/packages manager…
 On the Packages tab, search for titta and install.
 or
 Open the Pip terminal and type:
-'''bash
+```bash
 pip install titta
-'''
+```
 7. Program your experiment.
 You can use the Visual Search folder to get the find Waldo experiment
 You can use the Visual Search Lips folder to program a visual search experiment from scratch
@@ -61,7 +62,7 @@ https://github.com/marcus-nystrom/Titta/tree/master
 # Code
 Those are the different code snippets that you need to add to the Builder as a code element if you want your experiment to be recorded in Tobii Pro Lab.
 ## Before experiment tab
-'''python
+```python
 from titta import Titta, helpers_tobii as helpers
 from titta.TalkToProLab import TalkToProLab
 from psychopy import monitors
@@ -88,11 +89,11 @@ tracker.init()
 #%% Talk to Pro Lab
 ttl = TalkToProLab(project_name=project_name,
                    dummy_mode=dummy_mode)
-'''
+```
 
 ## Begin experiment
 
-'''python
+```python
 settings.FILENAME = expInfo['participant']
  
 # Participant ID and Project name for Lab
@@ -116,10 +117,10 @@ rec = ttl.start_recording("image_viewing",
                     participant_info['participant_id'],
                     screen_width=1920,
                     screen_height=1080)
-'''
+```
 
 ## Begin Routine
-'''python
+```python
 # Create Psychopy image objects and upload media to Lab
 # Make sure the images have the same resolution as the screen
 im_name = this_im #use image path from spreadsheet
@@ -144,10 +145,10 @@ if len(media_info) == 0:
 timestamp = ttl.get_time_stamp()
 t_onset = int(timestamp['timestamp'])
 print('t_onset', t_onset)
-'''
+```
 
 ## End Routine
-'''python
+```python
 timestamp = ttl.get_time_stamp()
 t_offset = int(timestamp['timestamp'])
 print('t_offset', t_offset)
@@ -157,9 +158,9 @@ ttl.send_stimulus_event(rec['recording_id'],
                         str(t_onset),
                         media_info[i]['media_id'],
                     	end_timestamp = str(t_offset))
-'''
+```
 ## End Experiment
-'''python
+```python
 ## Stop recording
 ttl.send_message(ttl.external_presenter_address,
     {"operation": "StopRecording"})
@@ -174,7 +175,7 @@ ttl.send_message(ttl.external_presenter_address,
     "recording_id": rec['recording_id']})
 print('recording has been finalized')
 ttl.disconnect()
-'''
+```
 
 # Setup Triggers
 The current setup uses a Brain Products USB trigger box connected to the stimuli presentation computer via USB. The presentation computer sends triggers to the EEG amplifier on the onset of each stimuli.
@@ -183,21 +184,21 @@ The current setup uses a Brain Products USB trigger box connected to the stimuli
 Add a code element that contains:
 
 Begin Experiment:
-'''python
+```python
 Import serial
 port = serial.Serial(port="COM7",baudrate=2000000)
-'''
+```
 
 Begin Routine:
-'''python
+```python
 #Mark the stimulus onset triggers as "not sent"
 #at the start of the trial
 stimulus_pulse_started = False
 stimulus_pulse_ended = False
-'''
+```
 
 Each Frame:
-'''python
+```python
 ##STIMULUS TRIGGERS##
 #Check to see if the stimulus is presented this frame
 #and send the trigger if it is
@@ -211,7 +212,7 @@ if stimulus_pulse_started and not stimulus_pulse_ended:
         if globalClock.getTime() - stimulus_pulse_start_time >= 0.05:
             win.callOnFlip(port.write, [0x00])
             stimulus_pulse_ended = True
-'''
+```
 
 # Troubleshooting
 Eye tracking name
