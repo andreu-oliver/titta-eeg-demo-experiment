@@ -4,7 +4,7 @@
 - [x] Trigger
 - [ ] Trigger information with dificulty level embeded
 - [ ] Finish the documentation
-s
+
 # Requirements
 This script was tested using:
 - Psychopy version 2024.1.1
@@ -36,24 +36,24 @@ You can use the Visual Search Lips folder to program a visual search experiment 
 8. Add the code components
 See code components below
 9. Create a new Tobii Pro Lab project in Third-Party presenter.
-10. Move to the record tab and make sure the eye tracker is seen.
+10. Move to the record tab and make sure the eye tracker is selected.
 11. Go back to Psychopy and press run.
 12. Add a unique participant number that has not been sent to Pro Lab yet.
 13. Record the experiment (remember to press space to start the calibration)
 14. When done, go back to Pro Lab and save the recording.
-7. Go back to Psychopy and run the experiment a second time.
-8. Close Psychopy and go to Pro Lab.
-9. Visualise the replay of the recording.
-10. Visualize the raw data
-11. Visualize other data (pupil size and eye openness)
-12. Go to Visualise and have a look at the heatmaps
-13. Go to AOI tool and mark the AOI for the target
-14. Add AOI tag to classify the AOI as easy or difficult
-15. Go to metrics visualisation
-16. Create a TOI
-17. Select the metric “time to first fixation”
-18. Filter the data until the table looks as you would like it for your results
-19. Export the file.
+15. Go back to Psychopy and run the experiment a second time.
+16. Close Psychopy and go to Pro Lab.
+17. Visualise the replay of the recording.
+18. Visualize the raw data
+19. Visualize other data (pupil size and eye openness)
+20. Go to Visualise and have a look at the heatmaps
+21. Go to AOI tool and mark the AOI for the target
+22. Add AOI tag to classify the AOI as easy or difficult
+23. Go to metrics visualisation
+24. Create a TOI
+25. Select the metric “time to first fixation”
+26. Filter the data until the table looks as you would like it for your results
+27. Export the file.
 
 # Source code
 
@@ -62,6 +62,8 @@ https://github.com/marcus-nystrom/Titta/tree/master
 # Code
 Those are the different code snippets that you need to add to the Builder as a code element if you want your experiment to be recorded in Tobii Pro Lab.
 ## Before experiment tab
+This code snippet take care of the general information needed for the connection with the eye tracker and with Tobii Pro Lab. Note that you need to change the code in ET Settings to coment and uncomment the name of the eye tracker that corresponds to the one you are using.
+
 ```python
 from titta import Titta, helpers_tobii as helpers
 from titta.TalkToProLab import TalkToProLab
@@ -92,6 +94,11 @@ ttl = TalkToProLab(project_name=project_name,
 ```
 
 ## Begin experiment
+This code stablishes the connection with Tobii Pro Lab and calibrats the participant. You have 4 ways of callibrating the participant:
+- Calibrating the participant beforehand using the Tobii Pro Eye Tracker Manager.
+- Open a different Screen-Based Project in Tobii Pro Lab and callibrate the participants there.
+- Callibrate activating the Psychopy default calibration options.
+- Callibrate using the Titta Callibration routin (uncoment the necessary code below to perform calibration this way).
 
 ```python
 settings.FILENAME = expInfo['participant']
@@ -120,6 +127,8 @@ rec = ttl.start_recording("image_viewing",
 ```
 
 ## Begin Routine
+This code taks care of handeling the media you are presenting in your experument. Be careful as to change the `[:-4]` to the necessary number to substract the end of the file extension name. For instance, if the stimuli you present is a .jpg, then you need to substract 4 characters to get only the file name (3 for the letters plus one for the .).
+
 ```python
 # Create Psychopy image objects and upload media to Lab
 # Make sure the images have the same resolution as the screen
@@ -148,6 +157,7 @@ print('t_onset', t_onset)
 ```
 
 ## End Routine
+Sends the onset and offset information to Tobii Pro Lab.
 ```python
 timestamp = ttl.get_time_stamp()
 t_offset = int(timestamp['timestamp'])
@@ -159,7 +169,10 @@ ttl.send_stimulus_event(rec['recording_id'],
                         media_info[i]['media_id'],
                     	end_timestamp = str(t_offset))
 ```
+
 ## End Experiment
+This set of instructions finalise the recordings and disconnects from Tobii Pro Lab.
+
 ```python
 ## Stop recording
 ttl.send_message(ttl.external_presenter_address,
