@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on March 05, 2025, at 09:28
+    on March 05, 2025, at 11:52
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -40,8 +40,8 @@ from psychopy import monitors
 
 #%% ET settings
 # et_name = 'Tobii Pro Spark'
-# et_name = 'Tobii Pro Fusion'
-et_name = 'Tobii Pro Nano'
+et_name = 'Tobii Pro Fusion'
+# et_name = 'Tobii Pro Nano'
 # et_name = 'Tobii Pro Spectrum'
  
 dummy_mode = False
@@ -459,6 +459,9 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                         participant_info['participant_id'],
                         screen_width=1920,
                         screen_height=1080)
+    # Run 'Begin Experiment' code from eeg_trigger
+    import serial
+    port = serial.Serial(port="COM7",baudrate=2000000)
     
     # --- Initialize components for Routine "Thankyou" ---
     thankyou_image = visual.ImageStim(
@@ -883,6 +886,11 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         timestamp = ttl.get_time_stamp()
         t_onset = int(timestamp['timestamp'])
         print('t_onset', t_onset)
+        # Run 'Begin Routine' code from eeg_trigger
+        #Mark the stimulus onset triggers as "not sent"
+        #at the start of the trial
+        stimulus_pulse_started = False
+        stimulus_pulse_ended = False
         # keep track of which components have finished
         trialComponents = [image]
         for thisComponent in trialComponents:
@@ -940,6 +948,21 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                     # update status
                     image.status = FINISHED
                     image.setAutoDraw(False)
+            # Run 'Each Frame' code from eeg_trigger
+            ##STIMULUS TRIGGERS##
+            #Check to see if the stimulus is presented this frame
+            #and send the trigger if it is
+            if image.status == STARTED and not stimulus_pulse_started: #Change 'image' to match the name of the component that you want to send the trigger for
+                win.callOnFlip(port.write, [0x01])
+                stimulus_pulse_start_time = globalClock.getTime()
+                stimulus_pulse_started  = True
+            #If it's time to end the pulse, reset the value to "0"
+            #so that we don't continue sending triggers on every frame
+            if stimulus_pulse_started and not stimulus_pulse_ended:
+                    if globalClock.getTime() - stimulus_pulse_start_time >= 0.1:
+                        win.callOnFlip(port.write, [0x00])
+                        stimulus_pulse_ended = True
+            
             
             # check for quit (typically the Esc key)
             if defaultKeyboard.getKeys(keyList=["escape"]):
