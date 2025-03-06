@@ -4,9 +4,9 @@ EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro La
 
 ## To do
 
-- [ ] Change the stimuli to the visual search stimuli
 - [ ] Program the stimuli to advance on gaze 1000ms
 - [ ] Trigger information with dificulty level embeded
+- [x] Change the stimuli to the visual search stimuli
 - [x] Finish the documentation
 - [x] Trigger
 
@@ -143,7 +143,7 @@ This code taks care of handeling the media you are presenting in your experument
 ```python
 # Create Psychopy image objects and upload media to Lab
 # Make sure the images have the same resolution as the screen
-im_name = this_im #use image path from spreadsheet
+im_name = images #use image path from spreadsheet, the name of the variable correspons to the name of the column in the table
  
 im = visual.ImageStim(win, image = im_name)
 media_info = []

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on March 05, 2025, at 11:52
+    on March 06, 2025, at 16:58
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -18,7 +18,7 @@ from psychopy import plugins
 plugins.activatePlugins()
 prefs.hardware['audioLib'] = 'ptb'
 prefs.hardware['audioLatencyMode'] = '3'
-from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout, hardware
+from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout, hardware, iohub
 from psychopy.tools import environmenttools
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER, priority)
@@ -67,7 +67,7 @@ deviceManager = hardware.DeviceManager()
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 # store info about the experiment session
 psychopyVersion = '2024.1.1'
-expName = 'EEG_experimemt'  # from the Builder filename that created this script
+expName = 'eeg_experimemt'  # from the Builder filename that created this script
 # information about this experiment
 expInfo = {
     'participant': f"{randint(0, 999999):06.0f}",
@@ -209,7 +209,7 @@ def setupWindow(expInfo=None, win=None):
     if win is None:
         # if not given a window to setup, make one
         win = visual.Window(
-            size=[3840, 2160], fullscr=_fullScr, screen=0,
+            size=[1920, 1080], fullscr=_fullScr, screen=0,
             winType='pyglet', allowStencil=False,
             monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
             backgroundImage='', backgroundFit='none',
@@ -260,6 +260,16 @@ def setupDevices(expInfo, thisExp, win):
     # --- Setup input devices ---
     ioConfig = {}
     
+    # Setup eyetracking
+    ioConfig['eyetracker.hw.tobii.EyeTracker'] = {
+        'name': 'tracker',
+        'model_name': 'Tobii Pro Fusion',
+        'serial_number': '',
+        'runtime_settings': {
+            'sampling_rate': 120.0,
+        }
+    }
+    
     # Setup iohub keyboard
     ioConfig['Keyboard'] = dict(use_keymap='psychopy')
     
@@ -269,6 +279,7 @@ def setupDevices(expInfo, thisExp, win):
     ioServer = io.launchHubServer(window=win, **ioConfig)
     # store ioServer object in the device manager
     deviceManager.ioServer = ioServer
+    deviceManager.devices['eyetracker'] = ioServer.getDevice('tracker')
     
     # create a default keyboard (e.g. to check for escape)
     if deviceManager.getDevice('defaultKeyboard') is None:
@@ -286,6 +297,12 @@ def setupDevices(expInfo, thisExp, win):
         key_resp_2 = deviceManager.addDevice(
             deviceClass='keyboard',
             deviceName='key_resp_2',
+        )
+    if deviceManager.getDevice('key_resp_4') is None:
+        # initialise key_resp_4
+        key_resp_4 = deviceManager.addDevice(
+            deviceClass='keyboard',
+            deviceName='key_resp_4',
         )
     if deviceManager.getDevice('key_resp_3') is None:
         # initialise key_resp_3
@@ -395,33 +412,31 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     # Start Code - component code to be run after the window creation
     
     # --- Initialize components for Routine "welcome" ---
-    welcome_image = visual.ImageStim(
-        win=win,
-        name='welcome_image', 
-        image='img/welcome.png', mask=None, anchor='center',
-        ori=0.0, pos=(0, 0), size=(1, 1),
-        color=[1,1,1], colorSpace='rgb', opacity=None,
-        flipHoriz=False, flipVert=False,
-        texRes=128.0, interpolate=True, depth=0.0)
     key_resp = keyboard.Keyboard(deviceName='key_resp')
+    welcome_message = visual.TextStim(win=win, name='welcome_message',
+        text='Welcome to this experiment\nPlease, start the EEG recording',
+        font='Open Sans',
+        pos=None, height=0.05, wrapWidth=None, ori=0.0, 
+        color='white', colorSpace='rgb', opacity=None, 
+        languageStyle='LTR',
+        depth=-1.0);
     
     # --- Initialize components for Routine "instructions" ---
-    instruction_image = visual.ImageStim(
-        win=win,
-        name='instruction_image', 
-        image='img/instructions.png', mask=None, anchor='center',
-        ori=0.0, pos=(0, 0), size=(1, 1),
-        color=[1,1,1], colorSpace='rgb', opacity=None,
-        flipHoriz=False, flipVert=False,
-        texRes=128.0, interpolate=True, depth=0.0)
     key_resp_2 = keyboard.Keyboard(deviceName='key_resp_2')
+    text = visual.TextStim(win=win, name='text',
+        text='In the following images, you will see some coffee beans. Hidden amongst them, there are some lips. Your task is to locate the lips. The image will change once you look at the lips for a certain amount of time.',
+        font='Open Sans',
+        pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+        color='white', colorSpace='rgb', opacity=None, 
+        languageStyle='LTR',
+        depth=-1.0);
     
     # --- Initialize components for Routine "cross" ---
     image_2 = visual.ImageStim(
         win=win,
         name='image_2', 
         image='cross.jpg', mask=None, anchor='center',
-        ori=0.0, pos=(0, 0), size=(1, 1),
+        ori=0.0, pos=(0, 0), size=None,
         color=[1,1,1], colorSpace='rgb', opacity=None,
         flipHoriz=False, flipVert=False,
         texRes=128.0, interpolate=True, depth=0.0)
@@ -430,8 +445,8 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     image = visual.ImageStim(
         win=win,
         name='image', 
-        image='target_diode.bmp', mask=None, anchor='center',
-        ori=0.0, pos=(0, 0), size=(1, 1),
+        image='default.png', mask=None, anchor='center',
+        ori=0.0, pos=(0, 0), size=None,
         color=[1,1,1], colorSpace='rgb', opacity=None,
         flipHoriz=False, flipVert=False,
         texRes=128.0, interpolate=True, depth=0.0)
@@ -459,20 +474,17 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                         participant_info['participant_id'],
                         screen_width=1920,
                         screen_height=1080)
-    # Run 'Begin Experiment' code from eeg_trigger
-    import serial
-    port = serial.Serial(port="COM7",baudrate=2000000)
+    key_resp_4 = keyboard.Keyboard(deviceName='key_resp_4')
     
     # --- Initialize components for Routine "Thankyou" ---
-    thankyou_image = visual.ImageStim(
-        win=win,
-        name='thankyou_image', 
-        image='img/thankyou.png', mask=None, anchor='center',
-        ori=0.0, pos=(0, 0), size=(1, 1),
-        color=[1,1,1], colorSpace='rgb', opacity=None,
-        flipHoriz=False, flipVert=False,
-        texRes=128.0, interpolate=True, depth=0.0)
     key_resp_3 = keyboard.Keyboard(deviceName='key_resp_3')
+    thank_you_message = visual.TextStim(win=win, name='thank_you_message',
+        text='Thank you for your collaboration',
+        font='Open Sans',
+        pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+        color='white', colorSpace='rgb', opacity=None, 
+        languageStyle='LTR',
+        depth=-1.0);
     
     # create some handy timers
     
@@ -510,7 +522,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     key_resp.rt = []
     _key_resp_allKeys = []
     # keep track of which components have finished
-    welcomeComponents = [welcome_image, key_resp]
+    welcomeComponents = [key_resp, welcome_message]
     for thisComponent in welcomeComponents:
         thisComponent.tStart = None
         thisComponent.tStop = None
@@ -532,26 +544,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
-        
-        # *welcome_image* updates
-        
-        # if welcome_image is starting this frame...
-        if welcome_image.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            welcome_image.frameNStart = frameN  # exact frame index
-            welcome_image.tStart = t  # local t and not account for scr refresh
-            welcome_image.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(welcome_image, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win, 'welcome_image.started')
-            # update status
-            welcome_image.status = STARTED
-            welcome_image.setAutoDraw(True)
-        
-        # if welcome_image is active this frame...
-        if welcome_image.status == STARTED:
-            # update params
-            pass
         
         # *key_resp* updates
         waitOnFlip = False
@@ -580,6 +572,26 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 key_resp.duration = _key_resp_allKeys[-1].duration
                 # a response ends the routine
                 continueRoutine = False
+        
+        # *welcome_message* updates
+        
+        # if welcome_message is starting this frame...
+        if welcome_message.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            welcome_message.frameNStart = frameN  # exact frame index
+            welcome_message.tStart = t  # local t and not account for scr refresh
+            welcome_message.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(welcome_message, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'welcome_message.started')
+            # update status
+            welcome_message.status = STARTED
+            welcome_message.setAutoDraw(True)
+        
+        # if welcome_message is active this frame...
+        if welcome_message.status == STARTED:
+            # update params
+            pass
         
         # check for quit (typically the Esc key)
         if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -626,7 +638,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     key_resp_2.rt = []
     _key_resp_2_allKeys = []
     # keep track of which components have finished
-    instructionsComponents = [instruction_image, key_resp_2]
+    instructionsComponents = [key_resp_2, text]
     for thisComponent in instructionsComponents:
         thisComponent.tStart = None
         thisComponent.tStop = None
@@ -648,26 +660,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
-        
-        # *instruction_image* updates
-        
-        # if instruction_image is starting this frame...
-        if instruction_image.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            instruction_image.frameNStart = frameN  # exact frame index
-            instruction_image.tStart = t  # local t and not account for scr refresh
-            instruction_image.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(instruction_image, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win, 'instruction_image.started')
-            # update status
-            instruction_image.status = STARTED
-            instruction_image.setAutoDraw(True)
-        
-        # if instruction_image is active this frame...
-        if instruction_image.status == STARTED:
-            # update params
-            pass
         
         # *key_resp_2* updates
         waitOnFlip = False
@@ -696,6 +688,26 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 key_resp_2.duration = _key_resp_2_allKeys[-1].duration
                 # a response ends the routine
                 continueRoutine = False
+        
+        # *text* updates
+        
+        # if text is starting this frame...
+        if text.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            text.frameNStart = frameN  # exact frame index
+            text.tStart = t  # local t and not account for scr refresh
+            text.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(text, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'text.started')
+            # update status
+            text.status = STARTED
+            text.setAutoDraw(True)
+        
+        # if text is active this frame...
+        if text.status == STARTED:
+            # update params
+            pass
         
         # check for quit (typically the Esc key)
         if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -737,7 +749,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=5.0, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=[None],
+        trialList=data.importConditions('images.xlsx'),
         seed=None, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -860,18 +872,18 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         continueRoutine = True
         # update component parameters for each repeat
         thisExp.addData('trial.started', globalClock.getTime(format='float'))
+        image.setImage(images)
         # Run 'Begin Routine' code from code
         # Create Psychopy image objects and upload media to Lab
         # Make sure the images have the same resolution as the screen
-        im_target = "target_diode.bmp"
-        im_cross =  "cross.jpg"
+        im_name = images
         
-        im = visual.ImageStim(win, image = im_target)
+        im = visual.ImageStim(win, image = im_name)
         media_info = []
         # Upload media (if not already uploaded)
         print('Searching media in Tobii Pro Lab')
-        if not ttl.find_media(im_target):
-            media_info.append(ttl.upload_media(im_target, "image"))
+        if not ttl.find_media(im_name):
+            media_info.append(ttl.upload_media(im_name, "image"))
             print('Media not found, uploading media to Tobii Pro Lab')
          
         # If the media were uploaded already, just get their names and IDs.
@@ -879,20 +891,18 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             print('Media found, organising media to match Tobii Pro Lab')
             uploaded_media = ttl.list_media()['media_list']
             for m in uploaded_media:
-                if im_target[:-4] == m['media_name']:
+                if im_name[:-4] == m['media_name']:
                     media_info.append(m)
                     break
          
         timestamp = ttl.get_time_stamp()
         t_onset = int(timestamp['timestamp'])
         print('t_onset', t_onset)
-        # Run 'Begin Routine' code from eeg_trigger
-        #Mark the stimulus onset triggers as "not sent"
-        #at the start of the trial
-        stimulus_pulse_started = False
-        stimulus_pulse_ended = False
+        key_resp_4.keys = []
+        key_resp_4.rt = []
+        _key_resp_4_allKeys = []
         # keep track of which components have finished
-        trialComponents = [image]
+        trialComponents = [image, key_resp_4]
         for thisComponent in trialComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -907,7 +917,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         
         # --- Run Routine "trial" ---
         routineForceEnded = not continueRoutine
-        while continueRoutine and routineTimer.getTime() < 1.0:
+        while continueRoutine:
             # get current time
             t = routineTimer.getTime()
             tThisFlip = win.getFutureFlipTime(clock=routineTimer)
@@ -935,34 +945,33 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 # update params
                 pass
             
-            # if image is stopping this frame...
-            if image.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > image.tStartRefresh + 1.0-frameTolerance:
-                    # keep track of stop time/frame for later
-                    image.tStop = t  # not accounting for scr refresh
-                    image.tStopRefresh = tThisFlipGlobal  # on global time
-                    image.frameNStop = frameN  # exact frame index
-                    # add timestamp to datafile
-                    thisExp.timestampOnFlip(win, 'image.stopped')
-                    # update status
-                    image.status = FINISHED
-                    image.setAutoDraw(False)
-            # Run 'Each Frame' code from eeg_trigger
-            ##STIMULUS TRIGGERS##
-            #Check to see if the stimulus is presented this frame
-            #and send the trigger if it is
-            if image.status == STARTED and not stimulus_pulse_started: #Change 'image' to match the name of the component that you want to send the trigger for
-                win.callOnFlip(port.write, [0x01])
-                stimulus_pulse_start_time = globalClock.getTime()
-                stimulus_pulse_started  = True
-            #If it's time to end the pulse, reset the value to "0"
-            #so that we don't continue sending triggers on every frame
-            if stimulus_pulse_started and not stimulus_pulse_ended:
-                    if globalClock.getTime() - stimulus_pulse_start_time >= 0.1:
-                        win.callOnFlip(port.write, [0x00])
-                        stimulus_pulse_ended = True
+            # *key_resp_4* updates
+            waitOnFlip = False
             
+            # if key_resp_4 is starting this frame...
+            if key_resp_4.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                key_resp_4.frameNStart = frameN  # exact frame index
+                key_resp_4.tStart = t  # local t and not account for scr refresh
+                key_resp_4.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(key_resp_4, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'key_resp_4.started')
+                # update status
+                key_resp_4.status = STARTED
+                # keyboard checking is just starting
+                waitOnFlip = True
+                win.callOnFlip(key_resp_4.clock.reset)  # t=0 on next screen flip
+                win.callOnFlip(key_resp_4.clearEvents, eventType='keyboard')  # clear events on next screen flip
+            if key_resp_4.status == STARTED and not waitOnFlip:
+                theseKeys = key_resp_4.getKeys(keyList=['y','n','left','right','space'], ignoreKeys=["escape"], waitRelease=False)
+                _key_resp_4_allKeys.extend(theseKeys)
+                if len(_key_resp_4_allKeys):
+                    key_resp_4.keys = _key_resp_4_allKeys[-1].name  # just the last key pressed
+                    key_resp_4.rt = _key_resp_4_allKeys[-1].rt
+                    key_resp_4.duration = _key_resp_4_allKeys[-1].duration
+                    # a response ends the routine
+                    continueRoutine = False
             
             # check for quit (typically the Esc key)
             if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -1000,11 +1009,15 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                                 str(t_onset),
                                 media_info[i]['media_id'],
                                 end_timestamp = str(t_offset))
-        # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
-        if routineForceEnded:
-            routineTimer.reset()
-        else:
-            routineTimer.addTime(-1.000000)
+        # check responses
+        if key_resp_4.keys in ['', [], None]:  # No response was made
+            key_resp_4.keys = None
+        trials.addData('key_resp_4.keys',key_resp_4.keys)
+        if key_resp_4.keys != None:  # we had a response
+            trials.addData('key_resp_4.rt', key_resp_4.rt)
+            trials.addData('key_resp_4.duration', key_resp_4.duration)
+        # the Routine "trial" was not non-slip safe, so reset the non-slip timer
+        routineTimer.reset()
         thisExp.nextEntry()
         
         if thisSession is not None:
@@ -1021,7 +1034,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     key_resp_3.rt = []
     _key_resp_3_allKeys = []
     # keep track of which components have finished
-    ThankyouComponents = [thankyou_image, key_resp_3]
+    ThankyouComponents = [key_resp_3, thank_you_message]
     for thisComponent in ThankyouComponents:
         thisComponent.tStart = None
         thisComponent.tStop = None
@@ -1043,26 +1056,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
-        
-        # *thankyou_image* updates
-        
-        # if thankyou_image is starting this frame...
-        if thankyou_image.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-            # keep track of start time/frame for later
-            thankyou_image.frameNStart = frameN  # exact frame index
-            thankyou_image.tStart = t  # local t and not account for scr refresh
-            thankyou_image.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(thankyou_image, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win, 'thankyou_image.started')
-            # update status
-            thankyou_image.status = STARTED
-            thankyou_image.setAutoDraw(True)
-        
-        # if thankyou_image is active this frame...
-        if thankyou_image.status == STARTED:
-            # update params
-            pass
         
         # *key_resp_3* updates
         waitOnFlip = False
@@ -1091,6 +1084,26 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                 key_resp_3.duration = _key_resp_3_allKeys[-1].duration
                 # a response ends the routine
                 continueRoutine = False
+        
+        # *thank_you_message* updates
+        
+        # if thank_you_message is starting this frame...
+        if thank_you_message.status == NOT_STARTED and tThisFlip >= 0-frameTolerance:
+            # keep track of start time/frame for later
+            thank_you_message.frameNStart = frameN  # exact frame index
+            thank_you_message.tStart = t  # local t and not account for scr refresh
+            thank_you_message.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(thank_you_message, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'thank_you_message.started')
+            # update status
+            thank_you_message.status = STARTED
+            thank_you_message.setAutoDraw(True)
+        
+        # if thank_you_message is active this frame...
+        if thank_you_message.status == STARTED:
+            # update params
+            pass
         
         # check for quit (typically the Esc key)
         if defaultKeyboard.getKeys(keyList=["escape"]):
