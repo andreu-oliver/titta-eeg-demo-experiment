@@ -1,67 +1,75 @@
-# To do
+# EEG Demo Experiment
+
+EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro Lab (to record eye tracking data and analyse it), and Brain Producs Recorder and Analyser (to record and analyse EEG data).
+
+## To do
+
 - [ ] Change the stimuli to the visual search stimuli
 - [ ] Program the stimuli to advance on gaze 1000ms
-- [x] Trigger
 - [ ] Trigger information with dificulty level embeded
-- [ ] Finish the documentation
+- [x] Finish the documentation
+- [x] Trigger
 
-# Requirements
+## Requirements
+
 This script was tested using:
+
 - Psychopy version 2024.1.1
 - Tobii Pro Lab version 1.241
+- TriggerBox Software 2.0.3
 
-# Step by step
+## Step by step
+
 1. Install the Eye Tracker Manager
 Link to download: https://connect.tobii.com/s/etm-downloads?language=en_US
 2. Create a screen profile
 See more information in this support article: https://connect.tobii.com/s/article/How-can-I-install-and-configure-my-screen-based-eye-tracker?language=en_US
-3. Install Tobii Pro Lab and add a license.
-Link to Download: https://connect.tobii.com/s/lab-downloads?language=en_US
-4. Download the experiment files.
-Link to the shared folder: 
-5. Open Builder
-6. Install Titta in Psychopy
-Go to “Components” + Get more…
-or
-Tools - Plugin/packages manager…
-On the Packages tab, search for titta and install.
-or
-Open the Pip terminal and type:
-```bash
-pip install titta
-```
-7. Program your experiment.
-You can use the Visual Search folder to get the find Waldo experiment
-You can use the Visual Search Lips folder to program a visual search experiment from scratch
-8. Add the code components
-See code components below
-9. Create a new Tobii Pro Lab project in Third-Party presenter.
-10. Move to the record tab and make sure the eye tracker is selected.
-11. Go back to Psychopy and press run.
-12. Add a unique participant number that has not been sent to Pro Lab yet.
-13. Record the experiment (remember to press space to start the calibration)
-14. When done, go back to Pro Lab and save the recording.
-15. Go back to Psychopy and run the experiment a second time.
-16. Close Psychopy and go to Pro Lab.
-17. Visualise the replay of the recording.
-18. Visualize the raw data
-19. Visualize other data (pupil size and eye openness)
-20. Go to Visualise and have a look at the heatmaps
-21. Go to AOI tool and mark the AOI for the target
-22. Add AOI tag to classify the AOI as easy or difficult
-23. Go to metrics visualisation
-24. Create a TOI
-25. Select the metric “time to first fixation”
-26. Filter the data until the table looks as you would like it for your results
-27. Export the file.
+3. Install the TriggerBox software:
+Link to download: https://www.brainproducts.com/downloads/more-software/#triggerbox-software
+4. Install Tobii Pro Lab and activate it with a valid license.
+ Link to Download: https://connect.tobii.com/s/lab-downloads?language=en_US
+5. Download the repository.
+6. Open Psycopy Builder.
+7. Install Titta in Psychopy:
+    Go to “Components” + Get more…
+    or
+    Tools - Plugin/packages manager…
+    On the Packages tab, search for titta and install.
+    or
+    Open the Pip terminal and type:
 
-# Source code
+    ```bash
+    pip install titta
+    ```
+
+8. Program your experiment in Builder.
+9. Add the code components (See code components below).
+10. Create a new Tobii Pro Lab project in Third-Party presenter. Note that you need to have Tobii Pro Lab Screen-Based One Edition or Full Edition.
+11. Move to the record tab and make sure the eye tracker is selected.
+12. Go back to Psychopy and press run.
+13. Add a unique participant number that has not been sent to Pro Lab yet.
+14. Record the experiment. If calibration with Psychopy or the Titta Toolbox is enabled remember to press space to start it.
+15. When the recording is done, go back to Pro Lab and save the recording.
+16. Close Psychopy and go to Pro Lab.
+17. You can now replay the recording by double clicking on the participant name you just recorded.
+18. You can add different data visualizations to the timeline, you can visualize the raw data, visualize pupil size, eye openness, blinks and others. Certain data streams may not be active if your recording was done with an eye tracker that is not compatible with that specific data stream. IE: if you record with a Tobii Pro Fusion at 250Hz you won't be able to get eye openness and blinks.
+19. Change to the Visualization tool by going to Analyze -> Visualizations. You can play arround with different visualization typs that use the images we uploaded to Tobii Pro Lab using Psychopy.
+20. You can switch to the AOI tool by going back to Analyze -> AOI Tool. If you added areas of interest in the code components you will see them already created there. If you didn't you can add them now.
+21. You can add tags to the AOI to merge the data from them in meaningul groups. The AOI tags will be shared between different images which will allow you to aggregate AOIs that are present in multiple of our stimuli.
+22. You can swith to Metrics Visualisation by going back to Analyze -> Metric Visualization
+23. In order for the graph to display data, you need to select a custom TOI. To create one, select the plus button and select a start and end event. This can be all the automatically created start of stimuli presentation and end of stimuli presentation. As this is a visual search experiment, the two relevant metrics are Interval Duraiton, which gives us the response time, and time to first fixation, which gives us the time they took to look at it for the first time. If you select one of them on the left hand side panel you should see a graph display.
+24. In order to export the metric represented on the graph, you can click the export button on the top of the grpah or you can go back to Analyze -> Metrics Export and select the relevant metrics and export options you want there.
+
+## Source code for the Titta Toolbox
 
 https://github.com/marcus-nystrom/Titta/tree/master
 
-# Code
+## Code Component to Talk to Pro Lab
+
 Those are the different code snippets that you need to add to the Builder as a code element if you want your experiment to be recorded in Tobii Pro Lab.
-## Before experiment tab
+
+### Before experiment tab
+
 This code snippet take care of the general information needed for the connection with the eye tracker and with Tobii Pro Lab. Note that you need to change the code in ET Settings to coment and uncomment the name of the eye tracker that corresponds to the one you are using.
 
 ```python
@@ -77,7 +85,7 @@ et_name = 'Tobii Pro Fusion'
  
 dummy_mode = False
 project_name = None # None or a project name that is open in Pro Lab.
-                	# If None, the currently opened project is used.
+                    # If None, the currently opened project is used.
  
 # Change any of the default settings?
 settings = Titta.get_defaults(et_name)
@@ -93,8 +101,10 @@ ttl = TalkToProLab(project_name=project_name,
                    dummy_mode=dummy_mode)
 ```
 
-## Begin experiment
+### Begin experiment
+
 This code stablishes the connection with Tobii Pro Lab and calibrats the participant. You have 4 ways of callibrating the participant:
+
 - Calibrating the participant beforehand using the Tobii Pro Eye Tracker Manager.
 - Open a different Screen-Based Project in Tobii Pro Lab and callibrate the participants there.
 - Callibrate activating the Psychopy default calibration options.
@@ -126,7 +136,8 @@ rec = ttl.start_recording("image_viewing",
                     screen_height=1080)
 ```
 
-## Begin Routine
+### Begin Routine
+
 This code taks care of handeling the media you are presenting in your experument. Be careful as to change the `[:-4]` to the necessary number to substract the end of the file extension name. For instance, if the stimuli you present is a .jpg, then you need to substract 4 characters to get only the file name (3 for the letters plus one for the .).
 
 ```python
@@ -140,24 +151,26 @@ media_info = []
 print('Searching media in Tobii Pro Lab')
 if not ttl.find_media(im_name):
     media_info.append(ttl.upload_media(im_name, "image"))
-	print('Media not found, uploading media to Tobii Pro Lab')
+    print('Media not found, uploading media to Tobii Pro Lab')
  
 # If the media were uploaded already, just get their names and IDs.
 if len(media_info) == 0:
-	print('Media found, organising media to match Tobii Pro Lab')
-	uploaded_media = ttl.list_media()['media_list']
-	for m in uploaded_media:
-    	if im_name[:-4] == m['media_name']:
+    print('Media found, organising media to match Tobii Pro Lab')
+    uploaded_media = ttl.list_media()['media_list']
+    for m in uploaded_media:
+        if im_name[:-4] == m['media_name']:
             media_info.append(m)
-        	break
+            break
  
 timestamp = ttl.get_time_stamp()
 t_onset = int(timestamp['timestamp'])
 print('t_onset', t_onset)
 ```
 
-## End Routine
+### End Routine
+
 Sends the onset and offset information to Tobii Pro Lab.
+
 ```python
 timestamp = ttl.get_time_stamp()
 t_offset = int(timestamp['timestamp'])
@@ -167,10 +180,11 @@ i = 0
 ttl.send_stimulus_event(rec['recording_id'],
                         str(t_onset),
                         media_info[i]['media_id'],
-                    	end_timestamp = str(t_offset))
+                        end_timestamp = str(t_offset))
 ```
 
-## End Experiment
+### End Experiment
+
 This set of instructions finalise the recordings and disconnects from Tobii Pro Lab.
 
 ```python
@@ -190,19 +204,21 @@ print('recording has been finalized')
 ttl.disconnect()
 ```
 
-# Setup Triggers
+## Code component to Setup Triggers
+
 The current setup uses a Brain Products USB trigger box connected to the stimuli presentation computer via USB. The presentation computer sends triggers to the EEG amplifier on the onset of each stimuli.
 
-## Using the Brain Products Trigger Box Plus
-Add a code element that contains:
+Add another code element that contains the following code.
 
-Begin Experiment:
+### Begin Experiment
+
 ```python
 Import serial
 port = serial.Serial(port="COM7",baudrate=2000000)
 ```
 
-Begin Routine:
+### Begin Routine
+
 ```python
 #Mark the stimulus onset triggers as "not sent"
 #at the start of the trial
@@ -210,7 +226,8 @@ stimulus_pulse_started = False
 stimulus_pulse_ended = False
 ```
 
-Each Frame:
+### Each Frame
+
 ```python
 ##STIMULUS TRIGGERS##
 #Check to see if the stimulus is presented this frame
@@ -227,7 +244,8 @@ if stimulus_pulse_started and not stimulus_pulse_ended:
             stimulus_pulse_ended = True
 ```
 
-# Troubleshooting
+## Troubleshooting
+
 Eye tracking name
 Make sure the eye tracker name stated at the start of the code corresponds with the eye tracker you have connected to the computer. If you are not sure, you can check the name in the Eye Tracker Manager. The most current options are:
 et_name = 'Tobii Pro Spark'
