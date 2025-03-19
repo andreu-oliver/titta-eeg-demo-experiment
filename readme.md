@@ -6,6 +6,8 @@ EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro La
 
 - [ ] Program the stimuli to advance on gaze 1000ms
 - [ ] Trigger information with dificulty level embeded
+- [ ] Use target coordenates to pass along the AOI areas to Pro Lab
+- [x] Accept directory path in stimuli check
 - [x] Change the stimuli to the visual search stimuli
 - [x] Finish the documentation
 - [x] Trigger
@@ -76,6 +78,7 @@ This code snippet take care of the general information needed for the connection
 from titta import Titta, helpers_tobii as helpers
 from titta.TalkToProLab import TalkToProLab
 from psychopy import monitors
+import re
 
 #%% ET settings
 # et_name = 'Tobii Pro Spark'
@@ -115,7 +118,7 @@ settings.FILENAME = expInfo['participant']
  
 # Participant ID and Project name for Lab
 pid = settings.FILENAME
- 
+
 participant_info = ttl.add_participant(pid)
 # Calibrate (must be done independently of Lab). You can do it either with the
 # Psychopy build-in calibration, or you can use the Titta calibration by
@@ -124,7 +127,6 @@ participant_info = ttl.add_participant(pid)
 # win.flip()
  
 #%% Recording
- 
 # Check that Lab is ready to start a recording
 state = ttl.get_state()
 assert state['state'] == 'ready', state['state']
@@ -152,16 +154,17 @@ print('Searching media in Tobii Pro Lab')
 if not ttl.find_media(im_name):
     media_info.append(ttl.upload_media(im_name, "image"))
     print('Media not found, uploading media to Tobii Pro Lab')
- 
+
 # If the media were uploaded already, just get their names and IDs.
 if len(media_info) == 0:
     print('Media found, organising media to match Tobii Pro Lab')
     uploaded_media = ttl.list_media()['media_list']
     for m in uploaded_media:
-        if im_name[:-4] == m['media_name']:
-            media_info.append(m)
-            break
- 
+        im_name_no_ext = re.search(r'/([^/]+)\.', im_name).group(1)
+        if im_name_no_ext == m['media_name']:
+        media_info.append(m)
+        break
+
 timestamp = ttl.get_time_stamp()
 t_onset = int(timestamp['timestamp'])
 print('t_onset', t_onset)
@@ -192,7 +195,7 @@ This set of instructions finalise the recordings and disconnects from Tobii Pro 
 ttl.send_message(ttl.external_presenter_address,
     {"operation": "StopRecording"})
 win.close()
- 
+
 #%% Finalize the recording
 # Finalize recording
 print(rec)
