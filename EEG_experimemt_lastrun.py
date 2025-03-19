@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on March 07, 2025, at 09:39
+    on March 19, 2025, at 15:51
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -435,7 +435,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     image_2 = visual.ImageStim(
         win=win,
         name='image_2', 
-        image='cross.jpg', mask=None, anchor='center',
+        image='cross.png', mask=None, anchor='center',
         ori=0.0, pos=(0, 0), size=None,
         color=[1,1,1], colorSpace='rgb', opacity=None,
         flipHoriz=False, flipVert=False,
@@ -747,7 +747,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     routineTimer.reset()
     
     # set up handler to look after randomisation of conditions etc
-    trials = data.TrialHandler(nReps=5.0, method='random', 
+    trials = data.TrialHandler(nReps=1.0, method='random', 
         extraInfo=expInfo, originPath=-1,
         trialList=data.importConditions('images.xlsx'),
         seed=None, name='trials')
@@ -876,8 +876,8 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         # Run 'Begin Routine' code from code
         # Create Psychopy image objects and upload media to Lab
         # Make sure the images have the same resolution as the screen
-        im_name = images
-        
+        im_name = images #use image path from spreadsheet, the name of the variable correspons to the name of the column in the table
+         
         im = visual.ImageStim(win, image = im_name)
         media_info = []
         # Upload media (if not already uploaded)
@@ -885,7 +885,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         if not ttl.find_media(im_name):
             media_info.append(ttl.upload_media(im_name, "image"))
             print('Media not found, uploading media to Tobii Pro Lab')
-         
+        
         # If the media were uploaded already, just get their names and IDs.
         if len(media_info) == 0:
             print('Media found, organising media to match Tobii Pro Lab')
@@ -893,8 +893,8 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             for m in uploaded_media:
                 if im_name[:-4] == m['media_name']:
                     media_info.append(m)
-                    break
-         
+                break
+        
         timestamp = ttl.get_time_stamp()
         t_onset = int(timestamp['timestamp'])
         print('t_onset', t_onset)
@@ -1023,7 +1023,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         if thisSession is not None:
             # if running in a Session with a Liaison client, send data up to now
             thisSession.sendExperimentData()
-    # completed 5.0 repeats of 'trials'
+    # completed 1.0 repeats of 'trials'
     
     
     # --- Prepare to start Routine "Thankyou" ---
