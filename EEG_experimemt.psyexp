@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" ?>
-<PsychoPy2experiment encoding="utf-8" version="2024.1.5">
+<PsychoPy2experiment encoding="utf-8" version="2024.1.1">
   <Settings>
     <Param val="3" valType="str" updates="None" name="Audio latency priority"/>
     <Param val="ptb" valType="str" updates="None" name="Audio lib"/>
@@ -274,7 +274,7 @@
         <Param val="$[0,0,0]" valType="color" updates="None" name="color"/>
         <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
         <Param val="" valType="str" updates="constant" name="desc"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="True" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="cross" valType="code" updates="None" name="name"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
@@ -379,15 +379,15 @@
         <Param val="settings.FILENAME = expInfo['participant']&amp;#10; &amp;#10;# Participant ID and Project name for Lab&amp;#10;pid = settings.FILENAME&amp;#10; &amp;#10;participant_info = ttl.add_participant(pid)&amp;#10;# Calibrate (must be done independently of Lab). You can do it either with the&amp;#10;# Psychopy build-in calibration, or you can use the Titta calibration by&amp;#10;# uncommenting the next two lines.&amp;#10;# tracker.calibrate(win)&amp;#10;# win.flip()&amp;#10; &amp;#10;#%% Recording&amp;#10; &amp;#10;# Check that Lab is ready to start a recording&amp;#10;state = ttl.get_state()&amp;#10;assert state['state'] == 'ready', state['state']&amp;#10; &amp;#10;## Start recording (Note: you have to click on the Record Tab first!)&amp;#10;rec = ttl.start_recording(&quot;image_viewing&quot;,&amp;#10;                    participant_info['participant_id'],&amp;#10;                    screen_width=1920,&amp;#10;                    screen_height=1080)" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="var _pj;&amp;#10;function _pj_snippets(container) {&amp;#10;    function _assert(comp, msg) {&amp;#10;        function PJAssertionError(message) {&amp;#10;            this.name = &quot;PJAssertionError&quot;;&amp;#10;            this.message = (message || &quot;Custom error PJAssertionError&quot;);&amp;#10;            if (((typeof Error.captureStackTrace) === &quot;function&quot;)) {&amp;#10;                Error.captureStackTrace(this, this.constructor);&amp;#10;            } else {&amp;#10;                this.stack = new Error(message).stack;&amp;#10;            }&amp;#10;        }&amp;#10;        PJAssertionError.prototype = Object.create(Error.prototype);&amp;#10;        PJAssertionError.prototype.constructor = PJAssertionError;&amp;#10;        msg = (msg || &quot;Assertion failed.&quot;);&amp;#10;        if ((! comp)) {&amp;#10;            throw new PJAssertionError(msg);&amp;#10;        }&amp;#10;    }&amp;#10;    container[&quot;_assert&quot;] = _assert;&amp;#10;    return container;&amp;#10;}&amp;#10;_pj = {};&amp;#10;_pj_snippets(_pj);&amp;#10;settings.FILENAME = expInfo[&quot;participant&quot;];&amp;#10;pid = settings.FILENAME;&amp;#10;participant_info = ttl.add_participant(pid);&amp;#10;state = ttl.get_state();&amp;#10;_pj._assert((state[&quot;state&quot;] === &quot;ready&quot;), state[&quot;state&quot;]);&amp;#10;rec = ttl.start_recording(&quot;image_viewing&quot;, participant_info[&quot;participant_id&quot;], {&quot;screen_width&quot;: 1920, &quot;screen_height&quot;: 1080});&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="/* Syntax Error: Fix Python code */" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="# Create Psychopy image objects and upload media to Lab&amp;#10;# Make sure the images have the same resolution as the screen&amp;#10;im_name = images #use image path from spreadsheet, the name of the variable correspons to the name of the column in the table&amp;#10; &amp;#10;im = visual.ImageStim(win, image = im_name)&amp;#10;media_info = []&amp;#10;# Upload media (if not already uploaded)&amp;#10;print('Searching media in Tobii Pro Lab')&amp;#10;if not ttl.find_media(im_name):&amp;#10;    media_info.append(ttl.upload_media(im_name, &quot;image&quot;))&amp;#10;    print('Media not found, uploading media to Tobii Pro Lab')&amp;#10;&amp;#10;# If the media were uploaded already, just get their names and IDs.&amp;#10;if len(media_info) == 0:&amp;#10;    print('Media found, organising media to match Tobii Pro Lab')&amp;#10;    uploaded_media = ttl.list_media()['media_list']&amp;#10;    for m in uploaded_media:&amp;#10;        im_name_no_ext = re.search(r'/([^/]+)\.', im_name).group(1)&amp;#10;        if im_name_no_ext == m['media_name']:&amp;#10;            media_info.append(m)&amp;#10;        break&amp;#10;&amp;#10;timestamp = ttl.get_time_stamp()&amp;#10;t_onset = int(timestamp['timestamp'])&amp;#10;print('t_onset', t_onset)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="# Create Psychopy image objects and upload media to Lab&amp;#10;# Make sure the images have the same resolution as the screen&amp;#10;im_name = images # use image path from spreadsheet, the name of the variable corresponds to the name of the column in the table&amp;#10;im = visual.ImageStim(win, image=im_name)&amp;#10;&amp;#10;print('Searching media in Tobii Pro Lab')&amp;#10;list_media_response = ttl.list_media()&amp;#10;&amp;#10;media_id = None&amp;#10;media_exists = False&amp;#10;&amp;#10;for m in list_media_response['media_list']:&amp;#10;    if im_name[:-4] == m['media_name']:&amp;#10;        media_id = m['media_id']&amp;#10;        media_exists = True&amp;#10;        print(f'Media &quot;{im_name}&quot; found in Tobii Pro Lab')&amp;#10;    break&amp;#10;&amp;#10;if not media_exists:&amp;#10;    print(f'Media &quot;{im_name}&quot; not found, uploading to Tobii Pro Lab')&amp;#10;    upload_response = ttl.upload_media(im_name, &quot;image&quot;)&amp;#10;    media_id = upload_response['media_id']&amp;#10;&amp;#10;if media_id is None:&amp;#10;    print(f'Error: Media &quot;{im_name}&quot; could not be found or uploaded')&amp;#10;&amp;#10;timestamp = ttl.get_time_stamp()&amp;#10;t_onset = int(timestamp['timestamp'])&amp;#10;print('t_onset', t_onset)" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Py" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="## Stop recording&amp;#10;ttl.send_message(ttl.external_presenter_address,&amp;#10;    {&quot;operation&quot;: &quot;StopRecording&quot;})&amp;#10;win.close()&amp;#10; &amp;#10;#%% Finalize the recording&amp;#10;# Finalize recording&amp;#10;print(rec)&amp;#10;print(rec['recording_id'])&amp;#10;ttl.send_message(ttl.external_presenter_address,&amp;#10;    {&quot;operation&quot;: &quot;FinalizeRecording&quot;,&amp;#10;    &quot;recording_id&quot;: rec['recording_id']})&amp;#10;print('recording has been finalized')&amp;#10;ttl.disconnect()" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="ttl.send_message(ttl.external_presenter_address, {&quot;operation&quot;: &quot;StopRecording&quot;});&amp;#10;psychoJS.window.close();&amp;#10;console.log(rec);&amp;#10;console.log(rec[&quot;recording_id&quot;]);&amp;#10;ttl.send_message(ttl.external_presenter_address, {&quot;operation&quot;: &quot;FinalizeRecording&quot;, &quot;recording_id&quot;: rec[&quot;recording_id&quot;]});&amp;#10;console.log(&quot;recording has been finalized&quot;);&amp;#10;ttl.disconnect();&amp;#10;" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="timestamp = ttl.get_time_stamp();&amp;#10;t_offset = Number.parseInt(timestamp[&quot;timestamp&quot;]);&amp;#10;console.log(&quot;t_offset&quot;, t_offset);&amp;#10;i = 0;&amp;#10;ttl.send_stimulus_event(rec[&quot;recording_id&quot;], t_onset.toString(), media_info[i][&quot;media_id&quot;], {&quot;end_timestamp&quot;: t_offset.toString()});&amp;#10;" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="timestamp = ttl.get_time_stamp()&amp;#10;t_offset = int(timestamp['timestamp'])&amp;#10;print('t_offset', t_offset)&amp;#10;&amp;#10;i = 0&amp;#10;ttl.send_stimulus_event(rec['recording_id'],&amp;#10;                        str(t_onset),&amp;#10;                        media_info[i]['media_id'],&amp;#10;                        end_timestamp = str(t_offset))" valType="extendedCode" updates="constant" name="End Routine"/>
-        <Param val="True" valType="bool" updates="None" name="disabled"/>
+        <Param val="t_offset = int(ttl.get_time_stamp()['timestamp'])&amp;#10;print('t_offset', t_offset)&amp;#10;&amp;#10;# Send stimulus event&amp;#10;ttl.send_stimulus_event(rec['recording_id'],&amp;#10;                        str(t_onset),&amp;#10;                        media_id,&amp;#10;                        end_timestamp=str(t_offset))" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="talk_to_prolab_code" valType="code" updates="None" name="name"/>
       </CodeComponent>
       <CodeComponent name="eeg_trigger" plugin="None">
@@ -420,8 +420,8 @@
         <Param val="(target_x, target_y)" valType="list" updates="set every repeat" name="pos"/>
         <Param val="every look" valType="str" updates="None" name="save"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="rectangle" valType="str" updates="None" name="shape"/>
-        <Param val="(0.15, 0.15)" valType="list" updates="constant" name="size"/>
+        <Param val="circle" valType="str" updates="None" name="shape"/>
+        <Param val="(0.3, 0.3)" valType="list" updates="constant" name="size"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="time (s)" valType="str" updates="None" name="startType"/>
         <Param val="0.0" valType="code" updates="None" name="startVal"/>
@@ -453,6 +453,34 @@
         <Param val="False" valType="bool" updates="constant" name="storeCorrect"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreenRefresh"/>
       </KeyboardComponent>
+      <PolygonComponent name="polygon" plugin="None">
+        <Param val="center" valType="str" updates="constant" name="anchor"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="True" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="-1.0000, -1.0000, -1.0000" valType="color" updates="constant" name="fillColor"/>
+        <Param val="linear" valType="str" updates="constant" name="interpolate"/>
+        <Param val="0.0000, 0.0000, 0.0000" valType="color" updates="constant" name="lineColor"/>
+        <Param val="1" valType="num" updates="constant" name="lineWidth"/>
+        <Param val="4" valType="int" updates="constant" name="nVertices"/>
+        <Param val="polygon" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(target_x, target_y)" valType="list" updates="set every repeat" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="circle" valType="str" updates="None" name="shape"/>
+        <Param val="(0.3, 0.3)" valType="list" updates="constant" name="size"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="code" updates="None" name="validator"/>
+        <Param val="" valType="list" updates="constant" name="vertices"/>
+      </PolygonComponent>
     </Routine>
   </Routines>
   <Flow>
@@ -460,7 +488,7 @@
     <Routine name="instructions"/>
     <LoopInitiator loopType="TrialHandler" name="trials">
       <Param name="Selected rows" updates="None" val="" valType="str"/>
-      <Param name="conditions" updates="None" val="[{'images': 'img\\img1.png', 'diff_level': 'low', 'target_x': 0.160185185185185, 'target_y': -0.436111111111111}, {'images': 'img\\img2.png', 'diff_level': 'high', 'target_x': 0.758333333333333, 'target_y': -0.099074074074074}, {'images': 'img\\img3.png', 'diff_level': 'high', 'target_x': 0.425, 'target_y': -0.207407407407407}, {'images': 'img\\img4.png', 'diff_level': 'high', 'target_x': -0.427777777777777, 'target_y': -0.191666666666666}, {'images': 'img\\img5.png', 'diff_level': 'low', 'target_x': -0.509259259259259, 'target_y': 0.141666666666666}, {'images': 'img\\img6.png', 'diff_level': 'low', 'target_x': 0.675925925925925, 'target_y': 0.29537037037037}]" valType="str"/>
+      <Param name="conditions" updates="None" val="[{'images': 'img1.png', 'diff_level': 'low', 'target_x': 0.160185185185185, 'target_y': -0.436111111111111}, {'images': 'img2.png', 'diff_level': 'high', 'target_x': 0.758333333333333, 'target_y': -0.099074074074074}, {'images': 'img3.png', 'diff_level': 'high', 'target_x': 0.425, 'target_y': -0.207407407407407}, {'images': 'img4.png', 'diff_level': 'high', 'target_x': -0.427777777777777, 'target_y': -0.191666666666666}, {'images': 'img5.png', 'diff_level': 'low', 'target_x': -0.509259259259259, 'target_y': 0.141666666666666}, {'images': 'img6.png', 'diff_level': 'low', 'target_x': 0.675925925925925, 'target_y': 0.29537037037037}]" valType="str"/>
       <Param name="conditionsFile" updates="None" val="images.xlsx" valType="file"/>
       <Param name="endPoints" updates="None" val="[0, 1]" valType="num"/>
       <Param name="isTrials" updates="None" val="True" valType="bool"/>

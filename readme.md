@@ -146,25 +146,29 @@ This code taks care of handeling the media you are presenting in your experument
 ```python
 # Create Psychopy image objects and upload media to Lab
 # Make sure the images have the same resolution as the screen
-im_name = images #use image path from spreadsheet, the name of the variable correspons to the name of the column in the table
- 
-im = visual.ImageStim(win, image = im_name)
-media_info = []
-# Upload media (if not already uploaded)
-print('Searching media in Tobii Pro Lab')
-if not ttl.find_media(im_name):
-    media_info.append(ttl.upload_media(im_name, "image"))
-    print('Media not found, uploading media to Tobii Pro Lab')
+im_name = images # use image path from spreadsheet, the name of the variable corresponds to the name of the column in the table
+im = visual.ImageStim(win, image=im_name)
 
-# If the media were uploaded already, just get their names and IDs.
-if len(media_info) == 0:
-    print('Media found, organising media to match Tobii Pro Lab')
-    uploaded_media = ttl.list_media()['media_list']
-    for m in uploaded_media:
-        im_name_no_ext = re.search(r'/([^/]+)\.', im_name).group(1)
-        if im_name_no_ext == m['media_name']:
-        media_info.append(m)
-        break
+print('Searching media in Tobii Pro Lab')
+list_media_response = ttl.list_media()
+
+media_id = None
+media_exists = False
+
+for m in list_media_response['media_list']:
+    if im_name[:-4] == m['media_name']:
+        media_id = m['media_id']
+        media_exists = True
+        print(f'Media "{im_name}" found in Tobii Pro Lab')
+    break
+
+if not media_exists:
+    print(f'Media "{im_name}" not found, uploading to Tobii Pro Lab')
+    upload_response = ttl.upload_media(im_name, "image")
+    media_id = upload_response['media_id']
+
+if media_id is None:
+    print(f'Error: Media "{im_name}" could not be found or uploaded')
 
 timestamp = ttl.get_time_stamp()
 t_onset = int(timestamp['timestamp'])
@@ -176,15 +180,14 @@ print('t_onset', t_onset)
 Sends the onset and offset information to Tobii Pro Lab.
 
 ```python
-timestamp = ttl.get_time_stamp()
-t_offset = int(timestamp['timestamp'])
+t_offset = int(ttl.get_time_stamp()['timestamp'])
 print('t_offset', t_offset)
 
-i = 0
+# Send stimulus event
 ttl.send_stimulus_event(rec['recording_id'],
                         str(t_onset),
-                        media_info[i]['media_id'],
-                        end_timestamp = str(t_offset))
+                        media_id,
+                        end_timestamp=str(t_offset))
 ```
 
 ### End Experiment
@@ -250,15 +253,31 @@ if stimulus_pulse_started and not stimulus_pulse_ended:
 
 ## Troubleshooting
 
-Eye tracking name
+### Eye tracking name
+
 Make sure the eye tracker name stated at the start of the code corresponds with the eye tracker you have connected to the computer. If you are not sure, you can check the name in the Eye Tracker Manager. The most current options are:
 et_name = 'Tobii Pro Spark'
 et_name = 'Tobii Pro Fusion'
 et_name = 'Tobii Pro Nano'
 et_name = 'Tobii Pro Spectrum'
 
-Participant number
+### Participant number
+
 Make sure the participant number does not already exist in Tobii Pro Lab. If the participant was created in Pro Lab but has no recording associated with it, you can delete it and use it again.
 
-File extension
+### File extension
+
 The value of im_name[:-4] has to be changed to accommodate for the file extension you are using. If you use .png files it is a 4, but for .jpeg it will need to be 5.
+
+### Connection debuging
+
+Run the 'connection_debuging.py' script to determine if there is a problem connecting to Tobii Pro Lab and get as a return the information about the media stored in the current project and a list of participants.
+
+### Index out of Range
+
+```python
+    media_info[i]['media_id'],
+IndexError: list index out of range
+```
+
+If you are getting a media out of range message, open a new Pro Lab project.

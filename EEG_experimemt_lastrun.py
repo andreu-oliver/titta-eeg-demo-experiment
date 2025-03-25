@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on March 19, 2025, at 15:51
+    on March 25, 2025, at 10:23
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -33,7 +33,7 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
-# Run 'Before Experiment' code from code
+# Run 'Before Experiment' code from talk_to_prolab_code
 from titta import Titta, helpers_tobii as helpers
 from titta.TalkToProLab import TalkToProLab
 from psychopy import monitors
@@ -431,16 +431,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         languageStyle='LTR',
         depth=-1.0);
     
-    # --- Initialize components for Routine "cross" ---
-    image_2 = visual.ImageStim(
-        win=win,
-        name='image_2', 
-        image='cross.png', mask=None, anchor='center',
-        ori=0.0, pos=(0, 0), size=None,
-        color=[1,1,1], colorSpace='rgb', opacity=None,
-        flipHoriz=False, flipVert=False,
-        texRes=128.0, interpolate=True, depth=0.0)
-    
     # --- Initialize components for Routine "trial" ---
     image = visual.ImageStim(
         win=win,
@@ -450,7 +440,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         color=[1,1,1], colorSpace='rgb', opacity=None,
         flipHoriz=False, flipVert=False,
         texRes=128.0, interpolate=True, depth=0.0)
-    # Run 'Begin Experiment' code from code
+    # Run 'Begin Experiment' code from talk_to_prolab_code
     settings.FILENAME = expInfo['participant']
      
     # Participant ID and Project name for Lab
@@ -747,7 +737,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     routineTimer.reset()
     
     # set up handler to look after randomisation of conditions etc
-    trials = data.TrialHandler(nReps=1.0, method='random', 
+    trials = data.TrialHandler(nReps=1.0, method='sequential', 
         extraInfo=expInfo, originPath=-1,
         trialList=data.importConditions('images.xlsx'),
         seed=None, name='trials')
@@ -774,126 +764,37 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             for paramName in thisTrial:
                 globals()[paramName] = thisTrial[paramName]
         
-        # --- Prepare to start Routine "cross" ---
-        continueRoutine = True
-        # update component parameters for each repeat
-        thisExp.addData('cross.started', globalClock.getTime(format='float'))
-        # keep track of which components have finished
-        crossComponents = [image_2]
-        for thisComponent in crossComponents:
-            thisComponent.tStart = None
-            thisComponent.tStop = None
-            thisComponent.tStartRefresh = None
-            thisComponent.tStopRefresh = None
-            if hasattr(thisComponent, 'status'):
-                thisComponent.status = NOT_STARTED
-        # reset timers
-        t = 0
-        _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        frameN = -1
-        
-        # --- Run Routine "cross" ---
-        routineForceEnded = not continueRoutine
-        while continueRoutine and routineTimer.getTime() < 1.0:
-            # get current time
-            t = routineTimer.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=routineTimer)
-            tThisFlipGlobal = win.getFutureFlipTime(clock=None)
-            frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-            # update/draw components on each frame
-            
-            # *image_2* updates
-            
-            # if image_2 is starting this frame...
-            if image_2.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                image_2.frameNStart = frameN  # exact frame index
-                image_2.tStart = t  # local t and not account for scr refresh
-                image_2.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(image_2, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'image_2.started')
-                # update status
-                image_2.status = STARTED
-                image_2.setAutoDraw(True)
-            
-            # if image_2 is active this frame...
-            if image_2.status == STARTED:
-                # update params
-                pass
-            
-            # if image_2 is stopping this frame...
-            if image_2.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > image_2.tStartRefresh + 1.0-frameTolerance:
-                    # keep track of stop time/frame for later
-                    image_2.tStop = t  # not accounting for scr refresh
-                    image_2.tStopRefresh = tThisFlipGlobal  # on global time
-                    image_2.frameNStop = frameN  # exact frame index
-                    # add timestamp to datafile
-                    thisExp.timestampOnFlip(win, 'image_2.stopped')
-                    # update status
-                    image_2.status = FINISHED
-                    image_2.setAutoDraw(False)
-            
-            # check for quit (typically the Esc key)
-            if defaultKeyboard.getKeys(keyList=["escape"]):
-                thisExp.status = FINISHED
-            if thisExp.status == FINISHED or endExpNow:
-                endExperiment(thisExp, win=win)
-                return
-            
-            # check if all components have finished
-            if not continueRoutine:  # a component has requested a forced-end of Routine
-                routineForceEnded = True
-                break
-            continueRoutine = False  # will revert to True if at least one component still running
-            for thisComponent in crossComponents:
-                if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
-                    continueRoutine = True
-                    break  # at least one component has not yet finished
-            
-            # refresh the screen
-            if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-                win.flip()
-        
-        # --- Ending Routine "cross" ---
-        for thisComponent in crossComponents:
-            if hasattr(thisComponent, "setAutoDraw"):
-                thisComponent.setAutoDraw(False)
-        thisExp.addData('cross.stopped', globalClock.getTime(format='float'))
-        # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
-        if routineForceEnded:
-            routineTimer.reset()
-        else:
-            routineTimer.addTime(-1.000000)
-        
         # --- Prepare to start Routine "trial" ---
         continueRoutine = True
         # update component parameters for each repeat
         thisExp.addData('trial.started', globalClock.getTime(format='float'))
         image.setImage(images)
-        # Run 'Begin Routine' code from code
+        # Run 'Begin Routine' code from talk_to_prolab_code
         # Create Psychopy image objects and upload media to Lab
         # Make sure the images have the same resolution as the screen
-        im_name = images #use image path from spreadsheet, the name of the variable correspons to the name of the column in the table
-         
-        im = visual.ImageStim(win, image = im_name)
-        media_info = []
-        # Upload media (if not already uploaded)
-        print('Searching media in Tobii Pro Lab')
-        if not ttl.find_media(im_name):
-            media_info.append(ttl.upload_media(im_name, "image"))
-            print('Media not found, uploading media to Tobii Pro Lab')
+        im_name = images # use image path from spreadsheet, the name of the variable corresponds to the name of the column in the table
+        im = visual.ImageStim(win, image=im_name)
         
-        # If the media were uploaded already, just get their names and IDs.
-        if len(media_info) == 0:
-            print('Media found, organising media to match Tobii Pro Lab')
-            uploaded_media = ttl.list_media()['media_list']
-            for m in uploaded_media:
-                if im_name[:-4] == m['media_name']:
-                    media_info.append(m)
-                break
+        print('Searching media in Tobii Pro Lab')
+        list_media_response = ttl.list_media()
+        
+        media_id = None
+        media_exists = False
+        
+        for m in list_media_response['media_list']:
+            if im_name[:-4] == m['media_name']:
+                media_id = m['media_id']
+                media_exists = True
+                print(f'Media "{im_name}" found in Tobii Pro Lab')
+            break
+        
+        if not media_exists:
+            print(f'Media "{im_name}" not found, uploading to Tobii Pro Lab')
+            upload_response = ttl.upload_media(im_name, "image")
+            media_id = upload_response['media_id']
+        
+        if media_id is None:
+            print(f'Error: Media "{im_name}" could not be found or uploaded')
         
         timestamp = ttl.get_time_stamp()
         t_onset = int(timestamp['timestamp'])
@@ -999,16 +900,15 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('trial.stopped', globalClock.getTime(format='float'))
-        # Run 'End Routine' code from code
-        timestamp = ttl.get_time_stamp()
-        t_offset = int(timestamp['timestamp'])
+        # Run 'End Routine' code from talk_to_prolab_code
+        t_offset = int(ttl.get_time_stamp()['timestamp'])
         print('t_offset', t_offset)
         
-        i = 0
+        # Send stimulus event
         ttl.send_stimulus_event(rec['recording_id'],
                                 str(t_onset),
-                                media_info[i]['media_id'],
-                                end_timestamp = str(t_offset))
+                                media_id,
+                                end_timestamp=str(t_offset))
         # check responses
         if key_resp_4.keys in ['', [], None]:  # No response was made
             key_resp_4.keys = None
@@ -1141,7 +1041,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     thisExp.nextEntry()
     # the Routine "Thankyou" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
-    # Run 'End Experiment' code from code
+    # Run 'End Experiment' code from talk_to_prolab_code
     ## Stop recording
     ttl.send_message(ttl.external_presenter_address,
         {"operation": "StopRecording"})
