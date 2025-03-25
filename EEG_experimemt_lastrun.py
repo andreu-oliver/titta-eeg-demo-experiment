@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on March 25, 2025, at 10:23
+    on March 25, 2025, at 11:14
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -776,29 +776,30 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         im = visual.ImageStim(win, image=im_name)
         
         print('Searching media in Tobii Pro Lab')
-        list_media_response = ttl.list_media()
+        prolab_list_media = ttl.list_media()['media_list']
         
         media_id = None
-        media_exists = False
         
-        for m in list_media_response['media_list']:
-            if im_name[:-4] == m['media_name']:
-                media_id = m['media_id']
-                media_exists = True
-                print(f'Media "{im_name}" found in Tobii Pro Lab')
-            break
-        
-        if not media_exists:
+        # Upload media (if not already uploaded)
+        print('Searching media in Tobii Pro Lab')
+        if not ttl.find_media(im_name):
             print(f'Media "{im_name}" not found, uploading to Tobii Pro Lab')
             upload_response = ttl.upload_media(im_name, "image")
             media_id = upload_response['media_id']
         
-        if media_id is None:
-            print(f'Error: Media "{im_name}" could not be found or uploaded')
+        # If the media were uploaded already, just get their names and IDs.
+        if media_id == None:
+            print('Media found, organising media to match Tobii Pro Lab')
+            for m in prolab_list_media:
+                if im_name[:-4] == m['media_name']:
+                    media_id = m['media_id']
+                    break
         
-        timestamp = ttl.get_time_stamp()
-        t_onset = int(timestamp['timestamp'])
+        t_onset = int(ttl.get_time_stamp()['timestamp'])
         print('t_onset', t_onset)
+        
+        
+        
         key_resp_4.keys = []
         key_resp_4.rt = []
         _key_resp_4_allKeys = []

@@ -5,9 +5,9 @@ EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro La
 ## To do
 
 - [ ] Upload fixation cross to Pro Lab
-- [x] Program the stimuli to advance on gaze 1000ms
-- [x] Trigger information with dificulty level embeded
 - [ ] Use target coordenates to pass along the AOI areas to Pro Lab
+- [ ] Program the stimuli to advance on gaze 1000ms
+- [x] Trigger information with dificulty level embeded
 - [x] Accept directory path in stimuli check
 - [x] Change the stimuli to the visual search stimuli
 - [x] Finish the documentation
@@ -150,28 +150,26 @@ im_name = images # use image path from spreadsheet, the name of the variable cor
 im = visual.ImageStim(win, image=im_name)
 
 print('Searching media in Tobii Pro Lab')
-list_media_response = ttl.list_media()
+prolab_list_media = ttl.list_media()['media_list']
 
 media_id = None
-media_exists = False
 
-for m in list_media_response['media_list']:
-    if im_name[:-4] == m['media_name']:
-        media_id = m['media_id']
-        media_exists = True
-        print(f'Media "{im_name}" found in Tobii Pro Lab')
-    break
-
-if not media_exists:
+# Upload media (if not already uploaded)
+print('Searching media in Tobii Pro Lab')
+if not ttl.find_media(im_name):
     print(f'Media "{im_name}" not found, uploading to Tobii Pro Lab')
     upload_response = ttl.upload_media(im_name, "image")
     media_id = upload_response['media_id']
 
-if media_id is None:
-    print(f'Error: Media "{im_name}" could not be found or uploaded')
+# If the media were uploaded already, just get their names and IDs.
+if media_id == None:
+    print('Media found, organising media to match Tobii Pro Lab')
+    for m in prolab_list_media:
+        if im_name[:-4] == m['media_name']:
+            media_id = m['media_id']
+            break
 
-timestamp = ttl.get_time_stamp()
-t_onset = int(timestamp['timestamp'])
+t_onset = int(ttl.get_time_stamp()['timestamp'])
 print('t_onset', t_onset)
 ```
 
@@ -272,12 +270,3 @@ The value of im_name[:-4] has to be changed to accommodate for the file extensio
 ### Connection debuging
 
 Run the 'connection_debuging.py' script to determine if there is a problem connecting to Tobii Pro Lab and get as a return the information about the media stored in the current project and a list of participants.
-
-### Index out of Range
-
-```python
-    media_info[i]['media_id'],
-IndexError: list index out of range
-```
-
-If you are getting a media out of range message, open a new Pro Lab project.
