@@ -4,9 +4,9 @@ EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro La
 
 ## To do
 
-- [ ] Upload fixation cross to Pro Lab
 - [ ] Use target coordenates to pass along the AOI areas to Pro Lab
-- [ ] Program the stimuli to advance on gaze 1000ms
+- [x] Upload fixation cross to Pro Lab
+- [x] Program the stimuli to advance on gaze 1000ms
 - [x] Trigger information with dificulty level embeded
 - [x] Accept directory path in stimuli check
 - [x] Change the stimuli to the visual search stimuli
