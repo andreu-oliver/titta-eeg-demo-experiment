@@ -2,16 +2,41 @@
 
 EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro Lab (to record eye tracking data and analyse it), and Brain Producs Recorder and Analyser (to record and analyse EEG data).
 
-## To do
+This sample experiment is a recreation of the Tobii visual search sample project. You can find the project and the walktrough of the experiment [here](https://connect.tobii.com/s/demo-project-visual-search-walk-through?language=en_US)
 
-- [ ] Use target coordenates to pass along the AOI areas to Pro Lab
-- [x] Upload fixation cross to Pro Lab
-- [x] Program the stimuli to advance on gaze 1000ms
-- [x] Trigger information with dificulty level embeded
-- [x] Accept directory path in stimuli check
-- [x] Change the stimuli to the visual search stimuli
-- [x] Finish the documentation
-- [x] Trigger
+## Setup
+
+```mermaid
+flowchart TD
+%% Nodes
+    A("Computer 1")
+    B("Computer 2")
+    C("Tobii Pro Lab")
+    D("Psychopy")
+    E("Brain Products Recorder")
+    F("EEG Amplifier")
+    G("USB Trigger Box")
+    H("Eye Tracker")
+    
+
+%% Edge connections between nodes
+    A --o C
+    A --o H
+    A --o D
+
+    H --> C
+    D --> G
+
+    E --o B
+    F --> E
+
+    G --> F
+    D --> C
+
+%% Individual node styling. Try the visual editor toolbar for easier styling!
+    style A color:#FFFFFF, fill:#004fa5
+    style B color:#FFFFFF, fill:#004fa5
+```
 
 ## Requirements
 
@@ -23,7 +48,7 @@ This script was tested using:
 
 ## Step by step
 
-1. Install the Eye Tracker Manager
+1. Install Tobii Eye Tracker Manager
 Link to download: https://connect.tobii.com/s/etm-downloads?language=en_US
 2. Create a screen profile
 See more information in this support article: https://connect.tobii.com/s/article/How-can-I-install-and-configure-my-screen-based-eye-tracker?language=en_US
@@ -46,22 +71,23 @@ Link to download: https://www.brainproducts.com/downloads/more-software/#trigger
     ```
 
 8. Program your experiment in Builder.
-9. Add the code components (See code components below).
-10. Create a new Tobii Pro Lab project in Third-Party presenter. Note that you need to have Tobii Pro Lab Screen-Based One Edition or Full Edition.
-11. Move to the record tab and make sure the eye tracker is selected.
-12. Go back to Psychopy and press run.
-13. Add a unique participant number that has not been sent to Pro Lab yet.
-14. Record the experiment. If calibration with Psychopy or the Titta Toolbox is enabled remember to press space to start it.
-15. When the recording is done, go back to Pro Lab and save the recording.
-16. Close Psychopy and go to Pro Lab.
-17. You can now replay the recording by double clicking on the participant name you just recorded.
-18. You can add different data visualizations to the timeline, you can visualize the raw data, visualize pupil size, eye openness, blinks and others. Certain data streams may not be active if your recording was done with an eye tracker that is not compatible with that specific data stream. IE: if you record with a Tobii Pro Fusion at 250Hz you won't be able to get eye openness and blinks.
-19. Change to the Visualization tool by going to Analyze -> Visualizations. You can play arround with different visualization typs that use the images we uploaded to Tobii Pro Lab using Psychopy.
-20. You can switch to the AOI tool by going back to Analyze -> AOI Tool. If you added areas of interest in the code components you will see them already created there. If you didn't you can add them now.
-21. You can add tags to the AOI to merge the data from them in meaningul groups. The AOI tags will be shared between different images which will allow you to aggregate AOIs that are present in multiple of our stimuli.
-22. You can swith to Metrics Visualisation by going back to Analyze -> Metric Visualization
-23. In order for the graph to display data, you need to select a custom TOI. To create one, select the plus button and select a start and end event. This can be all the automatically created start of stimuli presentation and end of stimuli presentation. As this is a visual search experiment, the two relevant metrics are Interval Duraiton, which gives us the response time, and time to first fixation, which gives us the time they took to look at it for the first time. If you select one of them on the left hand side panel you should see a graph display.
-24. In order to export the metric represented on the graph, you can click the export button on the top of the grpah or you can go back to Analyze -> Metrics Export and select the relevant metrics and export options you want there.
+9. Add the code components for the Tobii Pro Lab connection (See code components below).
+10. Add the code components for the EEG triggers (See code components below).
+11. Create a new Tobii Pro Lab project in Third-Party presenter. Note that you need to have Tobii Pro Lab Screen-Based One Edition or Full Edition.
+12. Move to the record tab and make sure the eye tracker is selected.
+13. Go back to Psychopy and press run.
+14. Add a unique participant number that has not been sent to Pro Lab yet.
+15. Record the experiment. If calibration with Psychopy or the Titta Toolbox is enabled remember to press space to start it.
+16. When the recording is done, go back to Pro Lab and save the recording.
+17. Close Psychopy and go to Pro Lab.
+18. You can now replay the recording by double clicking on the participant name you just recorded.
+19. You can add different data visualizations to the timeline, you can visualize the raw data, visualize pupil size, eye openness, blinks and others. Certain data streams may not be active if your recording was done with an eye tracker that is not compatible with that specific data stream. IE: if you record with a Tobii Pro Fusion at 250Hz you won't be able to get eye openness and blinks.
+20. Change to the Visualization tool by going to Analyze -> Visualizations. You can play arround with different visualization typs that use the images we uploaded to Tobii Pro Lab using Psychopy.
+21. You can switch to the AOI tool by going back to Analyze -> AOI Tool. If you added areas of interest in the code components you will see them already created there. If you didn't you can add them now.
+22. You can add tags to the AOI to merge the data from them in meaningul groups. The AOI tags will be shared between different images which will allow you to aggregate AOIs that are present in multiple of our stimuli.
+23. You can swith to Metrics Visualisation by going back to Analyze -> Metric Visualization
+24. In order for the graph to display data, you need to select a custom TOI. To create one, select the plus button and select a start and end event. This can be all the automatically created start of stimuli presentation and end of stimuli presentation. As this is a visual search experiment, the two relevant metrics are Interval Duraiton, which gives us the response time, and time to first fixation, which gives us the time they took to look at it for the first time. If you select one of them on the left hand side panel you should see a graph display.
+25. In order to export the metric represented on the graph, you can click the export button on the top of the grpah or you can go back to Analyze -> Metrics Export and select the relevant metrics and export options you want there.
 
 ## Source code for the Titta Toolbox
 
