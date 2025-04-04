@@ -26,7 +26,7 @@
     <Param val="False" valType="bool" updates="None" name="Show mouse"/>
     <Param val="height" valType="str" updates="None" name="Units"/>
     <Param val="" valType="str" updates="None" name="Use version"/>
-    <Param val="[3840, 2160]" valType="list" updates="None" name="Window size (pixels)"/>
+    <Param val="[1920, 1080]" valType="list" updates="None" name="Window size (pixels)"/>
     <Param val="none" valType="str" updates="None" name="backgroundFit"/>
     <Param val="" valType="str" updates="None" name="backgroundImg"/>
     <Param val="avg" valType="str" updates="None" name="blendMode"/>
@@ -420,17 +420,17 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="import serial&amp;#10;port = serial.Serial(port=&quot;COM7&quot;,baudrate=2000000)" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="import * as serial from 'serial';&amp;#10;port = new serial.Serial({&quot;port&quot;: &quot;COM7&quot;, &quot;baudrate&quot;: 2000000});&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="import * as serial from 'serial';&amp;#10;port = new serial.Serial({&quot;port&quot;: &quot;COM8&quot;, &quot;baudrate&quot;: 2000000});&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="stimulus_pulse_started = false;&amp;#10;stimulus_pulse_ended = false;&amp;#10;if ((diff_level === &quot;low&quot;)) {&amp;#10;    diff_trigger = [1];&amp;#10;} else {&amp;#10;    diff_trigger = [2];&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="#Mark the stimulus onset triggers as &quot;not sent&quot;&amp;#10;#at the start of the trial&amp;#10;stimulus_pulse_started = False&amp;#10;stimulus_pulse_ended = False&amp;#10;&amp;#10;# Define the trigger based on the difficulty level of the image&amp;#10;if diff_level == 'low':&amp;#10;    diff_trigger = [0x01]&amp;#10;else:&amp;#10;    diff_trigger = [0x02]" valType="extendedCode" updates="constant" name="Begin Routine"/>
-        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
+        <Param val="Py" valType="str" updates="None" name="Code Type"/>
         <Param val="##STIMULUS TRIGGERS##&amp;#10;#Check to see if the stimulus is presented this frame&amp;#10;#and send the trigger if it is&amp;#10;if image.status == STARTED and not stimulus_pulse_started: #Change 'image' to match the name of the component that you want to send the trigger for&amp;#10;    win.callOnFlip(port.write, diff_trigger)&amp;#10;    stimulus_pulse_start_time = globalClock.getTime()&amp;#10;    stimulus_pulse_started  = True&amp;#10;#If it's time to end the pulse, reset the value to &quot;0&quot;&amp;#10;#so that we don't continue sending triggers on every frame&amp;#10;if stimulus_pulse_started and not stimulus_pulse_ended:&amp;#10;        if globalClock.getTime() - stimulus_pulse_start_time &gt;= 0.1:&amp;#10;            win.callOnFlip(port.write, [0x00])&amp;#10;            stimulus_pulse_ended = True&amp;#10;" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="if (((image.status === PsychoJS.Status.STARTED) &amp;&amp; (! stimulus_pulse_started))) {&amp;#10;    psychoJS.window.callOnFlip(port.write, diff_trigger);&amp;#10;    stimulus_pulse_start_time = globalClock.getTime();&amp;#10;    stimulus_pulse_started = true;&amp;#10;}&amp;#10;if ((stimulus_pulse_started &amp;&amp; (! stimulus_pulse_ended))) {&amp;#10;    if (((globalClock.getTime() - stimulus_pulse_start_time) &gt;= 0.1)) {&amp;#10;        psychoJS.window.callOnFlip(port.write, [0]);&amp;#10;        stimulus_pulse_ended = true;&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
-        <Param val="True" valType="bool" updates="None" name="disabled"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="eeg_trigger" valType="code" updates="None" name="name"/>
       </CodeComponent>
       <RegionOfInterestComponent name="target" plugin="None">
@@ -439,7 +439,7 @@
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="look at" valType="str" updates="None" name="endRoutineOn"/>
-        <Param val="1" valType="num" updates="None" name="lookDur"/>
+        <Param val="0.5" valType="num" updates="None" name="lookDur"/>
         <Param val="4" valType="int" updates="constant" name="nVertices"/>
         <Param val="target" valType="code" updates="None" name="name"/>
         <Param val="0" valType="num" updates="constant" name="ori"/>

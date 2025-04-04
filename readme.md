@@ -1,6 +1,6 @@
 # EEG Demo Experiment
 
-EEG Demo Experiment running in Psychopy (for stimulu presentation), Tobii Pro Lab (to record eye tracking data and analyse it), and Brain Producs Recorder and Analyser (to record and analyse EEG data).
+EEG Demo Experiment running in PsychoPy (for stimulu presentation), Tobii Pro Lab (to record eye tracking data and analyse it), and Brain Producs Recorder and Analyser (to record and analyse EEG data).
 
 This sample experiment is a recreation of the Tobii visual search sample project. You can find the project and the walktrough of the experiment [here](https://connect.tobii.com/s/demo-project-visual-search-walk-through?language=en_US)
 
@@ -12,7 +12,7 @@ flowchart TD
     A("Computer 1")
     B("Computer 2")
     C("Tobii Pro Lab")
-    D("Psychopy")
+    D("PsychoPy")
     E("Brain Products Recorder")
     F("EEG Amplifier")
     G("USB Trigger Box")
@@ -23,7 +23,9 @@ flowchart TD
     A --o C
     A --o H
     A --o D
+    A --o G
 
+    H --> D
     H --> C
     D --> G
 
@@ -42,7 +44,7 @@ flowchart TD
 
 This script was tested using:
 
-- Psychopy version 2024.1.1
+- PsychoPy version 2024.1.1
 - Tobii Pro Lab version 1.241
 - TriggerBox Software 2.0.3
 
@@ -58,7 +60,7 @@ Link to download: https://www.brainproducts.com/downloads/more-software/#trigger
  Link to Download: https://connect.tobii.com/s/lab-downloads?language=en_US
 5. Download the repository.
 6. Open Psycopy Builder.
-7. Install Titta in Psychopy:
+7. Install Titta in PsychoPy:
     Go to “Components” + Get more…
     or
     Tools - Plugin/packages manager…
@@ -75,14 +77,14 @@ Link to download: https://www.brainproducts.com/downloads/more-software/#trigger
 10. Add the code components for the EEG triggers (See code components below).
 11. Create a new Tobii Pro Lab project in Third-Party presenter. Note that you need to have Tobii Pro Lab Screen-Based One Edition or Full Edition.
 12. Move to the record tab and make sure the eye tracker is selected.
-13. Go back to Psychopy and press run.
+13. Go back to PsychoPy and press run.
 14. Add a unique participant number that has not been sent to Pro Lab yet.
-15. Record the experiment. If calibration with Psychopy or the Titta Toolbox is enabled remember to press space to start it.
+15. Record the experiment. If calibration with PsychoPy or the Titta Toolbox is enabled remember to press space to start it.
 16. When the recording is done, go back to Pro Lab and save the recording.
-17. Close Psychopy and go to Pro Lab.
+17. Close PsychoPy and go to Pro Lab.
 18. You can now replay the recording by double clicking on the participant name you just recorded.
 19. You can add different data visualizations to the timeline, you can visualize the raw data, visualize pupil size, eye openness, blinks and others. Certain data streams may not be active if your recording was done with an eye tracker that is not compatible with that specific data stream. IE: if you record with a Tobii Pro Fusion at 250Hz you won't be able to get eye openness and blinks.
-20. Change to the Visualization tool by going to Analyze -> Visualizations. You can play arround with different visualization typs that use the images we uploaded to Tobii Pro Lab using Psychopy.
+20. Change to the Visualization tool by going to Analyze -> Visualizations. You can play arround with different visualization typs that use the images we uploaded to Tobii Pro Lab using PsychoPy.
 21. You can switch to the AOI tool by going back to Analyze -> AOI Tool. If you added areas of interest in the code components you will see them already created there. If you didn't you can add them now.
 22. You can add tags to the AOI to merge the data from them in meaningul groups. The AOI tags will be shared between different images which will allow you to aggregate AOIs that are present in multiple of our stimuli.
 23. You can swith to Metrics Visualisation by going back to Analyze -> Metric Visualization
@@ -104,7 +106,7 @@ This code snippet take care of the general information needed for the connection
 ```python
 from titta import Titta, helpers_tobii as helpers
 from titta.TalkToProLab import TalkToProLab
-from psychopy import monitors
+from psychoPy import monitors
 import re
 
 #%% ET settings
@@ -137,7 +139,7 @@ This code stablishes the connection with Tobii Pro Lab and calibrats the partici
 
 - Calibrating the participant beforehand using the Tobii Pro Eye Tracker Manager.
 - Open a different Screen-Based Project in Tobii Pro Lab and callibrate the participants there.
-- Callibrate activating the Psychopy default calibration options.
+- Callibrate activating the PsychoPy default calibration options.
 - Callibrate using the Titta Callibration routin (uncoment the necessary code below to perform calibration this way).
 
 ```python
@@ -148,7 +150,7 @@ pid = settings.FILENAME
 
 participant_info = ttl.add_participant(pid)
 # Calibrate (must be done independently of Lab). You can do it either with the
-# Psychopy build-in calibration, or you can use the Titta calibration by
+# PsychoPy build-in calibration, or you can use the Titta calibration by
 # uncommenting the next two lines.
 # tracker.calibrate(win)
 # win.flip()
@@ -170,7 +172,7 @@ rec = ttl.start_recording("image_viewing",
 This code taks care of handeling the media you are presenting in your experument. Be careful as to change the `[:-4]` to the necessary number to substract the end of the file extension name. For instance, if the stimuli you present is a .jpg, then you need to substract 4 characters to get only the file name (3 for the letters plus one for the .).
 
 ```python
-# Create Psychopy image objects and upload media to Lab
+# Create PsychoPy image objects and upload media to Lab
 # Make sure the images have the same resolution as the screen
 im_name = images # use image path from spreadsheet, the name of the variable corresponds to the name of the column in the table
 im = visual.ImageStim(win, image=im_name)

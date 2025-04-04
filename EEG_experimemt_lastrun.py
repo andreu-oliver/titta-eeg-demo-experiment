@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on March 25, 2025, at 11:49
+    on April 04, 2025, at 13:25
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -209,7 +209,7 @@ def setupWindow(expInfo=None, win=None):
     if win is None:
         # if not given a window to setup, make one
         win = visual.Window(
-            size=[3840, 2160], fullscr=_fullScr, screen=0,
+            size=[1920, 1080], fullscr=_fullScr, screen=0,
             winType='pyglet', allowStencil=False,
             monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
             backgroundImage='', backgroundFit='none',
@@ -297,12 +297,6 @@ def setupDevices(expInfo, thisExp, win):
         key_resp_2 = deviceManager.addDevice(
             deviceClass='keyboard',
             deviceName='key_resp_2',
-        )
-    if deviceManager.getDevice('key_resp_4') is None:
-        # initialise key_resp_4
-        key_resp_4 = deviceManager.addDevice(
-            deviceClass='keyboard',
-            deviceName='key_resp_4',
         )
     if deviceManager.getDevice('key_resp_3') is None:
         # initialise key_resp_3
@@ -478,25 +472,15 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                         participant_info['participant_id'],
                         screen_width=1920,
                         screen_height=1080)
+    # Run 'Begin Experiment' code from eeg_trigger
+    import serial
+    port = serial.Serial(port="COM7",baudrate=2000000)
     target = visual.ROI(win, name='target', device=eyetracker,
         debug=False,
         shape='circle',
         pos=[0,0], size=(0.2, 0.2), 
-        anchor='center', ori=0.0, depth=-2
+        anchor='center', ori=0.0, depth=-3
         )
-    key_resp_4 = keyboard.Keyboard(deviceName='key_resp_4')
-    AOI_Debuging = visual.ShapeStim(
-        win=win, name='AOI_Debuging',
-        size=(0.2, 0.2), vertices='circle',
-        ori=0.0, pos=[0,0], anchor='center',
-        lineWidth=1.0,     colorSpace='rgb',  lineColor=[0.0000, 0.0000, 0.0000], fillColor=[-1.0000, -1.0000, -1.0000],
-        opacity=None, depth=-4.0, interpolate=True)
-    gaze_position = visual.ShapeStim(
-        win=win, name='gaze_position',
-        size=(0.1, 0.1), vertices='circle',
-        ori=0.0, pos=[0,0], anchor='center',
-        lineWidth=1.0,     colorSpace='rgb',  lineColor='white', fillColor='white',
-        opacity=None, depth=-5.0, interpolate=True)
     
     # --- Initialize components for Routine "Thankyou" ---
     key_resp_3 = keyboard.Keyboard(deviceName='key_resp_3')
@@ -802,7 +786,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     routineTimer.reset()
     
     # set up handler to look after randomisation of conditions etc
-    trials = data.TrialHandler(nReps=1.0, method='sequential', 
+    trials = data.TrialHandler(nReps=10.0, method='sequential', 
         extraInfo=expInfo, originPath=-1,
         trialList=data.importConditions('images.xlsx'),
         seed=None, name='trials')
@@ -991,15 +975,22 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         
         t_onset = int(ttl.get_time_stamp()['timestamp'])
         print('t_onset', t_onset)
+        # Run 'Begin Routine' code from eeg_trigger
+        #Mark the stimulus onset triggers as "not sent"
+        #at the start of the trial
+        stimulus_pulse_started = False
+        stimulus_pulse_ended = False
+        
+        # Define the trigger based on the difficulty level of the image
+        if diff_level == 'low':
+            diff_trigger = [0x01]
+        else:
+            diff_trigger = [0x02]
         target.setPos((target_x, target_y))
         # clear any previous roi data
         target.reset()
-        key_resp_4.keys = []
-        key_resp_4.rt = []
-        _key_resp_4_allKeys = []
-        AOI_Debuging.setPos((target_x, target_y))
         # keep track of which components have finished
-        trialComponents = [image, target, key_resp_4, AOI_Debuging, gaze_position]
+        trialComponents = [image, target]
         for thisComponent in trialComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -1041,6 +1032,21 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             if image.status == STARTED:
                 # update params
                 pass
+            # Run 'Each Frame' code from eeg_trigger
+            ##STIMULUS TRIGGERS##
+            #Check to see if the stimulus is presented this frame
+            #and send the trigger if it is
+            if image.status == STARTED and not stimulus_pulse_started: #Change 'image' to match the name of the component that you want to send the trigger for
+                win.callOnFlip(port.write, diff_trigger)
+                stimulus_pulse_start_time = globalClock.getTime()
+                stimulus_pulse_started  = True
+            #If it's time to end the pulse, reset the value to "0"
+            #so that we don't continue sending triggers on every frame
+            if stimulus_pulse_started and not stimulus_pulse_ended:
+                    if globalClock.getTime() - stimulus_pulse_start_time >= 0.1:
+                        win.callOnFlip(port.write, [0x00])
+                        stimulus_pulse_ended = True
+            
             
             # if target is starting this frame...
             if target.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
@@ -1066,7 +1072,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
                         target.timesOff.append(target.clock.getTime()) # store time looked until
                     else:
                         target.timesOff[-1] = target.clock.getTime() # update time looked until
-                        if target.currentLookTime > 1.0: # check if they've been looking long enough
+                        if target.currentLookTime > 0.5: # check if they've been looking long enough
                             continueRoutine = False # end Routine on sufficiently long look
                     target.wasLookedIn = True  # if target is still looked at next frame, it is not a new look
                 else:
@@ -1076,72 +1082,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
             else:
                 target.clock.reset() # keep clock at 0 if roi hasn't started / has finished
                 target.wasLookedIn = False  # if target is looked at next frame, it is a new look
-            
-            # *key_resp_4* updates
-            waitOnFlip = False
-            
-            # if key_resp_4 is starting this frame...
-            if key_resp_4.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                key_resp_4.frameNStart = frameN  # exact frame index
-                key_resp_4.tStart = t  # local t and not account for scr refresh
-                key_resp_4.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(key_resp_4, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'key_resp_4.started')
-                # update status
-                key_resp_4.status = STARTED
-                # keyboard checking is just starting
-                waitOnFlip = True
-                win.callOnFlip(key_resp_4.clock.reset)  # t=0 on next screen flip
-                win.callOnFlip(key_resp_4.clearEvents, eventType='keyboard')  # clear events on next screen flip
-            if key_resp_4.status == STARTED and not waitOnFlip:
-                theseKeys = key_resp_4.getKeys(keyList=['y','n','left','right','space'], ignoreKeys=["escape"], waitRelease=False)
-                _key_resp_4_allKeys.extend(theseKeys)
-                if len(_key_resp_4_allKeys):
-                    key_resp_4.keys = _key_resp_4_allKeys[-1].name  # just the last key pressed
-                    key_resp_4.rt = _key_resp_4_allKeys[-1].rt
-                    key_resp_4.duration = _key_resp_4_allKeys[-1].duration
-                    # a response ends the routine
-                    continueRoutine = False
-            
-            # *AOI_Debuging* updates
-            
-            # if AOI_Debuging is starting this frame...
-            if AOI_Debuging.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                AOI_Debuging.frameNStart = frameN  # exact frame index
-                AOI_Debuging.tStart = t  # local t and not account for scr refresh
-                AOI_Debuging.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(AOI_Debuging, 'tStartRefresh')  # time at next scr refresh
-                # update status
-                AOI_Debuging.status = STARTED
-                AOI_Debuging.setAutoDraw(True)
-            
-            # if AOI_Debuging is active this frame...
-            if AOI_Debuging.status == STARTED:
-                # update params
-                pass
-            
-            # *gaze_position* updates
-            
-            # if gaze_position is starting this frame...
-            if gaze_position.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                gaze_position.frameNStart = frameN  # exact frame index
-                gaze_position.tStart = t  # local t and not account for scr refresh
-                gaze_position.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(gaze_position, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'gaze_position.started')
-                # update status
-                gaze_position.status = STARTED
-                gaze_position.setAutoDraw(True)
-            
-            # if gaze_position is active this frame...
-            if gaze_position.status == STARTED:
-                # update params
-                gaze_position.setPos([eyetracker.getPos()], log=False)
             
             # check for quit (typically the Esc key)
             if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -1185,13 +1125,6 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         else:
            trials.addData('target.timesOn', "")
            trials.addData('target.timesOff', "")
-        # check responses
-        if key_resp_4.keys in ['', [], None]:  # No response was made
-            key_resp_4.keys = None
-        trials.addData('key_resp_4.keys',key_resp_4.keys)
-        if key_resp_4.keys != None:  # we had a response
-            trials.addData('key_resp_4.rt', key_resp_4.rt)
-            trials.addData('key_resp_4.duration', key_resp_4.duration)
         # the Routine "trial" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()
@@ -1199,7 +1132,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
         if thisSession is not None:
             # if running in a Session with a Liaison client, send data up to now
             thisSession.sendExperimentData()
-    # completed 1.0 repeats of 'trials'
+    # completed 10.0 repeats of 'trials'
     
     
     # --- Prepare to start Routine "Thankyou" ---
